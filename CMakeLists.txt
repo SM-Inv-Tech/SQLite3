@@ -1,0 +1,14 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.11)
+
+PROJECT(SQLite3)
+
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/xhsqlite3)
+
+# 生成sqlite3动态库
+ADD_SUBDIRECTORY(sqlite3)
+
+# SQL必知必会
+ADD_SUBDIRECTORY(teach_yourself_sqlite3)
+
+# 练习
+ADD_SUBDIRECTORY(tutorials)

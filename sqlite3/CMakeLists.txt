@@ -1,0 +1,4 @@
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+
+ADD_LIBRARY(sqlite3 SHARED sqlite3.c shell.c)
+TARGET_LINK_LIBRARIES(sqlite3 pthread dl)
