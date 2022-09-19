@@ -10,6 +10,10 @@
 #ifndef OPEN_DB_HPP
 #define OPEN_DB_HPP
 
+#include "xhsqlite3.hpp"
+
+using namespace xhsqlite3;
+
 namespace xhsqlite3
 {
     // 消费者
@@ -23,7 +27,7 @@ namespace xhsqlite3
         std::string cust_zip;
         std::string cust_country;
         std::string cust_contact;
-        std::string cust_email;
+        std::unique_ptr<std::string> cust_email;
     };
 
 
@@ -72,33 +76,41 @@ namespace xhsqlite3
     auto init_storage(const std::string &db_path)
     {
         auto
-                storage = xhsqlite3::make_storage(db_path,
-                                                  xhsqlite3::make_table("Products",
-                                                                        xhsqlite3::make_column("prod_id", &Products::prod_id, xhsqlite3::primary_key()),
-                                                                        xhsqlite3::make_column("vend_id", &Products::vend_id),
-                                                                        xhsqlite3::make_column("prod_name", &Products::prod_name),
-                                                                        xhsqlite3::make_column("prod_price", &Products::prod_price),
-                                                                        xhsqlite3::make_column("prod_desc", &Products::prod_desc)),
-                                                  xhsqlite3::make_table("Customers",
-                                                                        xhsqlite3::make_column("cust_id", &Customers::cust_id, xhsqlite3::primary_key()),
-                                                                        xhsqlite3::make_column("cust_name", &Customers::cust_name),
-                                                                        xhsqlite3::make_column("cust_address", &Customers::cust_address),
-                                                                        xhsqlite3::make_column("cust_city", &Customers::cust_city),
-                                                                        xhsqlite3::make_column("cust_state", &Customers::cust_state),
-                                                                        xhsqlite3::make_column("cust_zip", &Customers::cust_zip),
-                                                                        xhsqlite3::make_column("cust_country", &Customers::cust_country),
-                                                                        xhsqlite3::make_column("cust_contact", &Customers::cust_contact),
-                                                                        xhsqlite3::make_column("cust_email", &Customers::cust_email)),
-                                                  xhsqlite3::make_table("OrderItems",
-                                                                        xhsqlite3::make_column("order_num", &OrderItems::order_num),
-                                                                        xhsqlite3::make_column("order_item", &OrderItems::order_item),
-                                                                        xhsqlite3::make_column("prod_id", &OrderItems::prod_id),
-                                                                        xhsqlite3::make_column("quantity", &OrderItems::quantity),
-                                                                        xhsqlite3::make_column("item_price", &OrderItems::item_price)),
-                                                  xhsqlite3::make_table("Orders",
-                                                                        xhsqlite3::make_column("order_num", &Orders::order_num),
-                                                                        xhsqlite3::make_column("order_date", &Orders::order_date),
-                                                                        xhsqlite3::make_column("cust_id", &Orders::cust_id))
+                storage = make_storage(db_path,
+                                       make_table("Customers",
+                                                  make_column("cust_id", &Customers::cust_id, xhsqlite3::primary_key()),
+                                                  make_column("cust_name", &Customers::cust_name),
+                                                  make_column("cust_address", &Customers::cust_address),
+                                                  make_column("cust_city", &Customers::cust_city),
+                                                  make_column("cust_state", &Customers::cust_state),
+                                                  make_column("cust_zip", &Customers::cust_zip),
+                                                  make_column("cust_country", &Customers::cust_country),
+                                                  make_column("cust_contact", &Customers::cust_contact),
+                                                  make_column("cust_email", &Customers::cust_email)),
+                                       make_table("OrderItems",
+                                                  make_column("order_num", &OrderItems::order_num),
+                                                  make_column("order_item", &OrderItems::order_item),
+                                                  make_column("prod_id", &OrderItems::prod_id),
+                                                  make_column("quantity", &OrderItems::quantity),
+                                                  make_column("item_price", &OrderItems::item_price)),
+                                       make_table("Orders",
+                                                  make_column("order_num", &Orders::order_num),
+                                                  make_column("order_date", &Orders::order_date),
+                                                  make_column("cust_id", &Orders::cust_id)),
+                                       make_table("Products",
+                                                  make_column("prod_id", &Products::prod_id, primary_key()),
+                                                  make_column("vend_id", &Products::vend_id),
+                                                  make_column("prod_name", &Products::prod_name),
+                                                  make_column("prod_price", &Products::prod_price),
+                                                  make_column("prod_desc", &Products::prod_desc)),
+                                       make_table("Vendors",
+                                                  make_column("vend_id", &Vendors::vend_id, primary_key()),
+                                                  make_column("vend_name", &Vendors::vend_name),
+                                                  make_column("vend_address", &Vendors::vend_address),
+                                                  make_column("vend_city", &Vendors::vend_city),
+                                                  make_column("vend_state", &Vendors::vend_state),
+                                                  make_column("vend_zip", &Vendors::vend_zip),
+                                                  make_column("vend_country", &Vendors::vend_country))
         );
         return storage;
     }

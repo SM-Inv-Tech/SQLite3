@@ -99,7 +99,7 @@ int main(int argc, char **argv)
                                                      c(&Employee::salary) = excluded(&Employee::salary))));
 
     // 插入结果查询
-    auto result = storage.select(asterisk<Employee>());
+    auto result = storage.select(asterisk<Employee>(), from<Employee>());
     fmt::print("{0}, {1}, {2}, {3}, {4}\n", "ID", "NAME", "AGE", "ADDRESS", "SALARY");
     for (auto &row: result)
     {
